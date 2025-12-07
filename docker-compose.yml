@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: gestor_pro_db
+      MYSQL_ROOT_PASSWORD: rootpassword123
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+
+  backend:
+    build: ./backend
+    restart: always
+    ports:
+      - "8001:8000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: mysql+mysqlconnector://root:rootpassword123@db/gestor_pro_db
+      SECRET_KEY: "super_secreto_key"
+      ALGORITHM: "HS256"
+
+volumes:
+  db_data:
